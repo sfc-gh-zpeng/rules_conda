@@ -12,6 +12,7 @@ toolchain(
     name = "{toolchain_name}",
     toolchain = ":runtimes",
     toolchain_type = "@bazel_tools//tools/python:toolchain_type",
+    target_compatible_with = [{target_compatible_labels}],
 )
 """
 
@@ -24,6 +25,7 @@ def _toolchain_impl(rctx):
         content = BUILD_FILE_CONTENT.format(
             runtime = runtime,
             toolchain_name = rctx.attr.toolchain_name,
+            target_compatible_labels = ",".join(["\"{}\"".format(l) for l in rctx.attr.target_compatible_with]),
         ),
     )
 
@@ -32,5 +34,6 @@ toolchain_rule = repository_rule(
     attrs = {
         "runtime": attr.label(mandatory = True),
         "toolchain_name": attr.string(mandatory = True),
+        "target_compatible_with": attr.label_list(),
     },
 )
